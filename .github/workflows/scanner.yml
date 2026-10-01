@@ -3,7 +3,7 @@ name: NSE RGB BGR Scanner
 on:
   workflow_dispatch:
   schedule:
-    - cron: "15 3-10 * * 1-5"
+    - cron: "45 3-9 * * 1-5"
 
 jobs:
   scan:
