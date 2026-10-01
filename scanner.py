@@ -166,6 +166,8 @@ def main():
         return
 
     rgb, bgr = scan()
+    print(f"RGB matches: {rgb}")
+    print(f"BGR matches: {bgr}")
 
     # State file prevents repeating the same symbol every hourly run.
     state_path = "last_alerts.txt"
