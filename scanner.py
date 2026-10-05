@@ -230,37 +230,36 @@ def scan():
 
     rgb = []
     bgr = []
+    failed_symbols = []
 
     processed = 0
 
-    failed_symbols = []
+    for symbol in symbols:
 
-for symbol in symbols:
+        close = get_close_series(
+            daily,
+            symbol
+        )
 
-    close = get_close_series(
-        daily,
-        symbol
-    )
+        if close is None or len(close) < 25:
+            failed_symbols.append(symbol)
+            continue
 
-    if close is None or len(close) < 25:
-        failed_symbols.append(symbol)
-        continue
+        signal = signal_for_close(close)
 
-    signal = signal_for_close(close)
+        if signal == RGB_NAME:
+            rgb.append(symbol)
 
-    if signal == RGB_NAME:
-        rgb.append(symbol)
+        elif signal == BGR_NAME:
+            bgr.append(symbol)
 
-    elif signal == BGR_NAME:
-        bgr.append(symbol)
-
-        if close is not None:
-            processed += 1
+        processed += 1
 
     print(
         f"Processed {processed}/{len(symbols)} symbols."
     )
-        if failed_symbols:
+
+    if failed_symbols:
         print(
             f"Symbols without usable data "
             f"({len(failed_symbols)}): "
@@ -268,7 +267,6 @@ for symbol in symbols:
         )
 
     return sorted(rgb), sorted(bgr)
-
 
 def send_telegram(message):
 
