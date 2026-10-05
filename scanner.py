@@ -19,6 +19,11 @@ BGR_NAME = "BGR"
 # This is intentionally kept in the repository instead of relying
 # on the discontinued/unstable NSE index API endpoint.
 FNO_SYMBOLS = [
+        "ATHERENERG",
+    "MAHABANK",
+    "SAGILITY",
+    "FORCEMOT",
+    "GODFRYPHLP",
     "AARTIIND", "ABB", "ABBOTINDIA", "ACC", "ADANIENT", "ADANIPORTS",
     "ABCAPITAL", "ABFRL", "ALKEM", "AMBUJACEM", "APOLLOHOSP",
     "APOLLOTYRE", "ASHOKLEY", "ASIANPAINT", "ASTRAL", "AUBANK",
@@ -228,20 +233,26 @@ def scan():
 
     processed = 0
 
-    for symbol in symbols:
+    failed_symbols = []
 
-        close = get_close_series(
-            daily,
-            symbol
-        )
+for symbol in symbols:
 
-        signal = signal_for_close(close)
+    close = get_close_series(
+        daily,
+        symbol
+    )
 
-        if signal == RGB_NAME:
-            rgb.append(symbol)
+    if close is None or len(close) < 25:
+        failed_symbols.append(symbol)
+        continue
 
-        elif signal == BGR_NAME:
-            bgr.append(symbol)
+    signal = signal_for_close(close)
+
+    if signal == RGB_NAME:
+        rgb.append(symbol)
+
+    elif signal == BGR_NAME:
+        bgr.append(symbol)
 
         if close is not None:
             processed += 1
@@ -249,6 +260,12 @@ def scan():
     print(
         f"Processed {processed}/{len(symbols)} symbols."
     )
+        if failed_symbols:
+        print(
+            f"Symbols without usable data "
+            f"({len(failed_symbols)}): "
+            f"{failed_symbols}"
+        )
 
     return sorted(rgb), sorted(bgr)
 
